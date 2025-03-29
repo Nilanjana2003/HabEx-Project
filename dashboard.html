@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabEx Dashboard</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff4b2; /* Warm yellow background */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Logo Styles */
+    .logo {
+      position: absolute;
+      top: 5px; /* Pushed further to the top */
+      left: 15px;
+      width: 100px; /* Slightly smaller size */
+    }
+
+    /* Container for Content */
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 120px 40px 40px; /* Increased top padding to avoid overlap */
+      gap: 40px; /* Space between the boxes */
+    }
+
+    /* Box Styles */
+    .box {
+      flex: 1;
+      max-width: 45%; /* Prevents excessive stretch */
+      height: 80vh; /* Box height increased */
+      padding: 30px;
+      border-radius: 20px; /* Softer rounded corners */
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff; /* Default background for consistency */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
+    }
+
+    /* Habits Box */
+    .habits-box {
+      background-color: #d4edff; /* Light blue */
+    }
+
+    /* Expenses Box */
+    .expenses-box {
+      background-color: #ffddd2; /* Light peach/coral */
+    }
+
+    /* Box Title (Banners) */
+    .box-title {
+      background-color: #007bff; /* Banner color */
+      color: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 22px;
+      text-align: center;
+      position: absolute;
+      top: -20px; /* Adjusted position to align with the box */
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%); /* Center alignment fix */
+      width: 60%; /* Narrower width */
+      height: 50px; /* Taller height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .expenses-box .box-title {
+      background-color: #ff6f61; /* Peach for Expenses */
+    }
+
+    /* Inner Button Styles */
+    .btn-container {
+      display: flex;
+      flex-direction: column; /* Stack buttons vertically */
+      justify-content: center;
+      align-items: center;
+      gap: 20px; /* Space between buttons */
+      height: 100%; /* Take up full height of the outer box */
+    }
+
+    /* Inner Buttons */
+    .btn {
+      width: 80%; /* Larger buttons to fill the box */
+      padding: 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px; /* Slightly larger font size */
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+
+    /* Buttons with Alternate Colors */
+    .habits-box .btn {
+      background-color: #ff6f61; /* Pink buttons in blue box */
+    }
+
+    .expenses-box .btn {
+      background-color: #007bff; /* Blue buttons in pink box */
+    }
+
+    /* Button Hover Colors */
+    .habits-box .btn:hover {
+      background-color: #ff4f4f; /* Slightly darker pink */
+    }
+
+    .expenses-box .btn:hover {
+      background-color: #0056b3; /* Slightly darker blue */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo on Top-Left -->
+  <img src="images/Black_Grey_Classic_Minimalist_Elegant_Personal_Monogram_Logo-removebg-preview.png" 
+       alt="HabEx Logo" class="logo">
+
+  <!-- Main Content Section -->
+  <div class="container">
+    
+    <!-- Habits Box -->
+    <div class="box habits-box">
+      <div class="box-title">Habits</div>
+      <div class="btn-container">
+        <button class="btn" onclick="window.location.href='add_habits.html'">Log a Habit</button>
+        <button class="btn" onclick="window.location.href='analyze_habits.html'">Analyze Habits</button>
+      </div>
+    </div>
+
+    <!-- Expenses Box -->
+    <div class="box expenses-box">
+      <div class="box-title">Expenses</div>
+      <div class="btn-container">
+        <button class="btn" onclick="window.location.href='add_expenses.html'">Log an Expense</button>
+        <button class="btn" onclick="window.location.href='analyze_expenses.html'">Analyze Expenses</button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

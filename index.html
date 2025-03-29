@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HabEx - Track your Life!</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff4b2; /* Warm yellow background */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 360px;
+      background-color: #ffcad4; /* Pale pink form */
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      padding: 25px;
+      text-align: center;
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 24px;
+      color: #333;
+    }
+    p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    input[type="password"]:focus {
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .hidden {
+      display: none;
+    }
+    .password-container {
+      position: relative;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+      color: #555;
+    }
+    .requirements {
+      text-align: left;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+    }
+    .requirements label {
+      margin-left: 5px;
+    }
+    .requirements input[type="checkbox"] {
+      accent-color: green;
+      margin-right: 5px;
+    }
+    #password-strength {
+      font-weight: bold;
+      margin-top: 10px;
+      display: none;
+    }
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Screen -->
+  <div class="container" id="welcome-screen">
+    <h2>Welcome to HabEx!</h2>
+    <p>Manage your habits and expenses efficiently.</p>
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showRegister()">Register Here</button>
+  </div>
+
+  <!-- Register Form -->
+  <div class="container hidden" id="register-form">
+    <h2>Register</h2>
+    <input type="text" id="reg-username" placeholder="Username" required>
+    
+    <!-- Password Field with Toggle -->
+    <div class="password-container">
+      <input type="password" id="reg-password" placeholder="Choose a strong password" required onfocus="showRequirements()" onkeyup="checkPasswordRequirements()">
+      <span class="toggle-password" onclick="togglePassword('reg-password')">👁️</span>
+    </div>
+    
+    <!-- Confirm Password Field with Toggle -->
+    <div class="password-container">
+      <input type="password" id="reg-password2" placeholder="Confirm Password" required onkeyup="validateConfirmPassword()">
+      <span class="toggle-password" onclick="togglePassword('reg-password2')">👁️</span>
+    </div>
+    <div class="error-message" id="confirm-password-error">Passwords do not match!</div>
+    
+    <!-- Password Requirements -->
+    <div class="requirements hidden" id="password-requirements">
+      <div>
+        <input type="checkbox" id="req-length" disabled>
+        <label for="req-length">At least 6 characters</label>
+      </div>
+      <div>
+        <input type="checkbox" id="req-number" disabled>
+        <label for="req-number">Contains a number</label>
+      </div>
+      <div>
+        <input type="checkbox" id="req-special" disabled>
+        <label for="req-special">Contains a special symbol (@, #, $, etc.)</label>
+      </div>
+    </div>
+    <div id="password-strength"></div>
+
+    <button id="register-button" onclick="registerUser()" disabled>Register</button>
+    <button onclick="goBack()">Go back</button>
+  </div>
+
+  <!-- Login Form -->
+  <div class="container hidden" id="login-form">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username" required>
+    <div class="password-container">
+      <input type="password" id="login-password" placeholder="Password" required>
+      <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+    </div>
+    <button onclick="loginUser()">Login</button>
+    <button onclick="goBack()">Go back</button>
+  </div>
+
+  <script>
+    function showLogin() {
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    }
+    function showRegister() {
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('register-form').classList.remove('hidden');
+    }
+    function goBack() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.add('hidden');
+      document.getElementById('welcome-screen').classList.remove('hidden');
+      clearForm();
+    }
+    function clearForm() {
+      document.querySelectorAll('input').forEach(input => input.value = '');
+      document.getElementById('password-requirements').classList.add('hidden');
+      document.getElementById('password-strength').style.display = 'none';
+      document.getElementById('confirm-password-error').style.display = 'none';
+    }
+    function togglePassword(id) {
+      const inputField = document.getElementById(id);
+      const toggleIcon = inputField.nextElementSibling;
+      if (inputField.type === "password") {
+        inputField.type = "text";
+        toggleIcon.textContent = "🙈";
+      } else {
+        inputField.type = "password";
+        toggleIcon.textContent = "👁️";
+      }
+    }
+    function showRequirements() {
+      document.getElementById('password-requirements').classList.remove('hidden');
+    }
+    function checkPasswordRequirements() {
+      const password = document.getElementById('reg-password').value;
+      const isLongEnough = password.length >= 6;
+      const hasNumber = /\d/.test(password);
+      const hasSpecial = /[@#$%^&*(),.?":{}|<>]/.test(password);
+
+      document.getElementById('req-length').checked = isLongEnough;
+      document.getElementById('req-number').checked = hasNumber;
+      document.getElementById('req-special').checked = hasSpecial;
+
+      const allValid = isLongEnough && hasNumber && hasSpecial;
+      const passwordStrength = document.getElementById('password-strength');
+      const passwordField = document.getElementById('reg-password');
+
+      if (allValid) {
+        passwordStrength.textContent = "Strong password!";
+        passwordStrength.style.color = "green";
+        passwordField.style.borderColor = "green";
+        document.getElementById('register-button').disabled = false;
+      } else if (isLongEnough && (hasNumber || hasSpecial)) {
+        passwordStrength.textContent = "Medium password!";
+        passwordStrength.style.color = "yellow";
+        passwordField.style.borderColor = "yellow";
+        document.getElementById('register-button').disabled = true;
+      } else {
+        passwordStrength.textContent = "Weak password!";
+        passwordStrength.style.color = "red";
+        passwordField.style.borderColor = "red";
+        document.getElementById('register-button').disabled = true;
+      }
+      passwordStrength.style.display = "block";
+    }
+    function validateConfirmPassword() {
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-password2').value;
+      const errorMessage = document.getElementById('confirm-password-error');
+
+      if (password !== confirmPassword) {
+        errorMessage.style.display = "block";
+      } else {
+        errorMessage.style.display = "none";
+      }
+    }
+    function registerUser() {
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-password2').value;
+
+      if (username === "" || password === "" || confirmPassword === "") {
+        alert("All fields are required!");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("❌ Passwords do not match!");
+        return;
+      }
+
+      alert("✅ Registration successful! Redirecting to dashboard...");
+      window.location.href = "dashboard.html"; // Redirect after registration
+    }
+    function loginUser() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      if (username === "" || password === "") {
+        alert("Please fill in both fields.");
+        return;
+      }
+
+      alert("✅ Login successful! Redirecting to dashboard...");
+      window.location.href = "dashboard.html"; // Redirect after login
+    }
+  </script>
+</body>
+</html>
