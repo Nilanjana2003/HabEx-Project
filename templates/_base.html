@@ -19,25 +19,43 @@
             display: flex;
             flex-direction: column; /* Stack nav/main vertically */
             min-height: 100vh; /* Ensure body fills viewport */
-            background-color: #fff4b2; /* Apply background here */
+            background-color: #ffffff; /* White background */
         }
+        /* --- Navbar Styling --- */
         nav {
             flex-shrink: 0; /* Prevent nav from shrinking */
-            padding: 10px 25px; /* Add padding to nav */
-            background-color: #f8f9fa; /* Light background for nav */
+            padding: 8px 25px; /* Adjusted padding */
+            background-color: #f8f9fa; /* Light grey background for nav bar */
             border-bottom: 1px solid #dee2e6; /* Separator line */
+            text-align: center; /* Center nav items */
         }
+        /* Styles for Navbar Links specifically */
         nav a {
-            margin-right: 15px;
-            color: #007bff;
-            text-decoration: none;
+            display: inline-block; /* Treat links like blocks for styling */
+            margin: 4px 5px; /* Spacing around buttons */
+            padding: 8px 18px; /* Button padding */
+            background-color: #E91E63; /* Vibrant Pink */
+            color: white !important; /* White text, important to override defaults */
+            border: none;
+            border-radius: 20px; /* Rounded 'bubble' effect */
+            text-decoration: none !important; /* Remove underline */
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth transition */
         }
         nav a:hover {
-            text-decoration: underline;
+            background-color: #D81B60; /* Slightly darker vibrant pink on hover */
+            transform: scale(1.05); /* Slight grow effect */
+            text-decoration: none !important;
+            color: white !important; /* Ensure text remains white on hover */
         }
         nav span { /* Style the welcome message */
-            margin-right: 15px;
-            color: #6c757d;
+            margin: 4px 10px;
+            color: #5a6268; /* Darker grey text */
+            display: inline-block;
+            vertical-align: middle;
+            padding: 8px 0; /* Match button vertical padding */
+            font-size: 14px; /* Match button font size */
         }
         /* Main content area styling for centering */
         main {
@@ -47,38 +65,87 @@
             align-items: center; /* Center vertically */
             padding: 20px; /* Padding around content */
             width: 100%;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Include padding in width */
         }
-        hr { /* Hide the default <hr> tag if nav border is used */
+        hr { /* Hide the default <hr> tag since nav has border */
             display: none;
         }
         /* Flash Message Container Styling */
         .flash-container {
-             position: fixed; /* Fixed position relative to viewport */
-             top: 65px; /* Position below nav (adjust as needed) */
+             position: fixed; /* Fixed position */
+             top: 60px; /* Position below nav (adjust if nav height changes) */
              left: 50%;
              transform: translateX(-50%);
              width: 90%;
-             max-width: 600px; /* Limit width */
-             z-index: 1050; /* Ensure it's above other content */
-             text-align: center; /* Center flash messages */
+             max-width: 600px;
+             z-index: 1050; /* High z-index to be on top */
+             text-align: center;
          }
         .flash {
-            padding: 12px 18px; /* More padding */
+            padding: 12px 18px;
             margin-bottom: 15px;
             border-radius: 5px;
-            border: 1px solid transparent; /* Base border */
-            font-size: 15px; /* Slightly larger */
+            border: 1px solid transparent;
+            font-size: 15px;
+            opacity: 0.95; /* Slight transparency */
         }
+        /* Flash message colors */
         .flash.success { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
         .flash.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
         .flash.warning { background-color: #fff3cd; color: #856404; border-color: #ffeeba; }
         .flash.info { background-color: #d1ecf1; color: #0c5460; border-color: #bee5eb; }
+
+        /* --- ADDED: General Button Styles --- */
+        .btn { /* Base style for all buttons/button-like links */
+            display: inline-block; /* Allows margin/padding */
+            padding: 10px 20px; /* Standard padding */
+            margin: 10px 5px; /* Standard margin */
+            border: none;
+            border-radius: 8px; /* Consistent rounding */
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            color: white !important; /* Default text color */
+            box-sizing: border-box;
+            width: 100%; /* Make buttons fill container by default */
+        }
+        .btn:hover {
+             transform: scale(1.02); /* Standard hover effect */
+             text-decoration: none !important;
+             color: white !important;
+        }
+        /* Primary Button Style (Pink) */
+        .btn-primary {
+            background-color: #E91E63; /* Vibrant Pink */
+        }
+        .btn-primary:hover {
+            background-color: #D81B60; /* Darker Pink */
+        }
+        /* Secondary Button Style (Grey) */
+        .btn-secondary {
+            background-color: #6c757d; /* Standard Grey */
+        }
+        .btn-secondary:hover {
+             background-color: #5a6268; /* Darker Grey */
+        }
+         /* Optional: Small Button Style */
+         .btn-sm {
+             padding: 5px 10px;
+             font-size: 13px;
+             width: auto; /* Small buttons don't need full width */
+             margin: 5px;
+         }
+        /* --- End General Button Styles --- */
+
     </style>
     {% block extra_head %}{% endblock %} {# Placeholder for page-specific head elements #}
 </head>
 <body>
     <nav>
+        {# Navbar links are styled above by 'nav a' rule #}
         <a href="{{ url_for('index') }}">Home</a>
         {% if current_user.is_authenticated %}
             <span>| Welcome, {{ current_user.username }}! |</span>
@@ -91,7 +158,7 @@
             <a href="{{ url_for('analyze_habits') }}">Analyze Habits</a>
             <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
-            {# Optionally add links for non-logged-in users if needed #}
+            {# <a href="{{ url_for('index') }}" class="btn btn-primary">Login/Register</a> #} {# Example if using classes here #}
         {% endif %}
     </nav>
 

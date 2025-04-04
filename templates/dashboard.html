@@ -4,134 +4,114 @@
 
 {% block content %} {# Start main content block #}
 <style>
-    /* Keep your existing styles here, or move them to a static CSS file */
-    body {
-      font-family: 'Arial', sans-serif;
-      /* Base template likely sets background, adjust if needed */
-      /* background-color: #fff4b2; */
-      margin: 0;
-      padding: 0;
+    /* Styles specific to dashboard.html */
+
+    /* Container for the two main boxes */
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between; /* CHANGED: Push boxes to edges */
+        align-items: stretch; /* CHANGED: Make boxes stretch to equal height */
+        padding: 40px 5%; /* Use percentage padding */
+        gap: 4%; /* Gap between boxes */
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 50px; /* Adjust if needed based on nav height */
     }
 
-    /* Logo Styles - Adjust path if needed in Flask */
-    .logo {
-      position: absolute; /* Or adjust positioning based on base template nav */
-      top: 5px;
-      left: 15px;
-      width: 100px;
-      z-index: 10; /* Ensure logo is above other elements if needed */
-    }
-
-    /* Container for Content */
-    .dashboard-container { /* Renamed to avoid conflict with potential base style */
-      display: flex;
-      justify-content: space-around; /* Use space-around for better spacing */
-      align-items: flex-start;
-      /* Padding adjusted assuming base template might have some */
-      padding: 40px 20px;
-      gap: 40px; /* Space between the boxes */
-      margin-top: 50px; /* Add margin to clear nav bar in base */
-    }
-
-    /* Box Styles */
+    /* General Box Styles */
     .box {
-      flex: 1;
-      max-width: 45%;
-      min-height: 300px; /* Use min-height instead of fixed height */
-      height: auto; /* Allow height to adjust */
-      padding: 30px;
-      padding-top: 50px; /* Increase top padding to make space for title */
-      border-radius: 20px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-      background-color: #ffffff;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center; /* Center button container vertically */
-      align-items: center; /* Center button container horizontally */
-      gap: 20px;
+        flex-basis: 48%; /* CHANGED: Each box takes nearly half the width */
+        /* Removed max-width */
+        min-height: 70vh; /* CHANGED: Make boxes significantly taller */
+        height: auto;
+        padding: 30px;
+        padding-top: 50px; /* Space for title */
+        border-radius: 25px; /* Slightly more rounded */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Slightly stronger shadow */
+        background-color: #E91E63; /* CHANGED: Pink background for boxes */
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        border: 1px solid #D81B60; /* Add subtle border */
     }
 
-    /* Habits Box */
-    .habits-box { background-color: #d4edff; }
-    /* Expenses Box */
-    .expenses-box { background-color: #ffddd2; }
+    /* Removed specific .habits-box / .expenses-box background colors */
 
     /* Box Title (Banners) */
     .box-title {
-      background-color: #007bff;
-      color: #fff;
-      padding: 12px; /* Adjusted padding */
-      border-radius: 12px;
-      font-size: 20px; /* Adjusted font size */
-      text-align: center;
-      position: absolute;
-      top: -25px; /* Adjusted position */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60%;
-      height: auto; /* Auto height */
-      min-height: 45px; /* Minimum height */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white; /* CHANGED: White background for title */
+        color: #E91E63; /* CHANGED: Pink text for title */
+        border: 1px solid #E91E63; /* Add pink border */
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 22px; /* Larger font */
+        font-weight: bold;
+        text-align: center;
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        min-height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    .expenses-box .box-title { background-color: #ff6f61; }
+    /* Removed specific .expenses-box .box-title style */
 
-    /* Button Container */
+
+    /* Button Container (inside the boxes) */
     .btn-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 25px; /* Increased gap */
-      width: 100%; /* Take full width */
-      margin-top: 20px; /* Add margin from title */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px; /* Increased gap */
+        width: 100%;
+        margin-top: 20px;
     }
 
-    /* Styled Links as Buttons */
-    .btn-link { /* Changed class name */
-      display: block; /* Make it block for width */
-      width: 80%;
-      padding: 18px; /* Adjusted padding */
-      background-color: #007bff;
-      color: #fff !important; /* Ensure text color override */
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      text-align: center;
-      text-decoration: none !important; /* Remove underline */
+    /* Styled Links as Buttons (inside the boxes) */
+    .btn-link {
+        display: block;
+        width: 85%; /* Slightly wider buttons */
+        padding: 20px; /* More padding */
+        background-color: white; /* CHANGED: White background */
+        color: #E91E63 !important; /* CHANGED: Pink text */
+        border: 1px solid #E91E63; /* Add pink border */
+        border-radius: 15px; /* More rounded */
+        font-size: 18px;
+        font-weight: bold; /* Bold text */
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        text-align: center;
+        text-decoration: none !important;
     }
     .btn-link:hover {
-      background-color: #0056b3;
-      transform: scale(1.05);
-      color: #fff !important; /* Ensure text color on hover */
+        background-color: #fce4ec; /* CHANGED: Very light pink on hover */
+        color: #D81B60 !important; /* Darker pink text on hover */
+        transform: scale(1.03); /* Smaller hover scale */
+        border-color: #D81B60; /* Darker border on hover */
     }
+    /* Removed specific .habits-box / .expenses-box button color rules */
 
-    /* Alternate Colors for Buttons */
-    .habits-box .btn-link { background-color: #ff6f61; }
-    .expenses-box .btn-link { background-color: #007bff; }
-    .habits-box .btn-link:hover { background-color: #ff4f4f; }
-    .expenses-box .btn-link:hover { background-color: #0056b3; }
-
-    /* Welcome Header */
+    /* Welcome Header above boxes */
     .welcome-header {
-      text-align: center;
-      margin-top: 60px; /* Adjust as needed based on nav/logo */
-      margin-bottom: -20px; /* Pull container up slightly */
-      font-size: 1.5em;
-      color: #333;
+        text-align: center;
+        margin-top: 20px; /* Reduced margin */
+        margin-bottom: 10px; /* Reduced margin */
+        font-size: 1.8em; /* Slightly larger */
+        color: #333;
+        width: 100%; /* Ensure it takes width for centering */
     }
 
 </style>
 
-{# --- Assume logo is handled by _base.html or place it here if needed --- #}
-{# <img src="{{ url_for('static', filename='images/your_logo_filename.png') }}" alt="HabEx Logo" class="logo"> #}
-{# Make sure 'your_logo_filename.png' is in HabEx/static/images/ #}
-
+{# --- Removed logo img tag - Assuming it's in _base.html or not needed --- #}
 
 <h2 class="welcome-header">Dashboard</h2>
 {# Optionally display username passed from Flask route #}
@@ -140,25 +120,24 @@
 
 <div class="dashboard-container">
 
-  <div class="box habits-box">
-    <div class="box-title">Habits</div>
-    <div class="btn-container">
-      {# Use url_for to link to Flask routes, styled as buttons #}
-      <a href="{{ url_for('add_habit') }}" class="btn-link">Log a Habit</a>
-      <a href="{{ url_for('view_habits') }}" class="btn-link">View Habits</a> {# Link to view page #}
-      <a href="{{ url_for('analyze_habits') }}" class="btn-link">Analyze Habits</a>
+    {# Removed specific habits-box/expenses-box classes, using general .box now #}
+    <div class="box">
+        <div class="box-title">Habits</div>
+        <div class="btn-container">
+            <a href="{{ url_for('add_habit') }}" class="btn-link">Log a Habit</a>
+            <a href="{{ url_for('view_habits') }}" class="btn-link">View Habits</a>
+            <a href="{{ url_for('analyze_habits') }}" class="btn-link">Analyze Habits</a>
+        </div>
     </div>
-  </div>
 
-  <div class="box expenses-box">
-    <div class="box-title">Expenses</div>
-    <div class="btn-container">
-      {# Use url_for to link to Flask routes, styled as buttons #}
-      <a href="{{ url_for('add_expense') }}" class="btn-link">Log an Expense</a>
-      <a href="{{ url_for('view_expenses') }}" class="btn-link">View Expenses</a> {# Link to view page #}
-      <a href="{{ url_for('analyze_expenses') }}" class="btn-link">Analyze Expenses</a>
+    <div class="box">
+        <div class="box-title">Expenses</div>
+        <div class="btn-container">
+            <a href="{{ url_for('add_expense') }}" class="btn-link">Log an Expense</a>
+            <a href="{{ url_for('view_expenses') }}" class="btn-link">View Expenses</a>
+            <a href="{{ url_for('analyze_expenses') }}" class="btn-link">Analyze Expenses</a>
+        </div>
     </div>
-  </div>
 
 </div>
 

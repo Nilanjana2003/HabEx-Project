@@ -5,34 +5,31 @@
 {% block content %} {# Define the main content block #}
 
 <style>
-    /* --- REMOVED CENTERING STYLES FOR BODY --- */
-    /* Centering is now handled by <main> in _base.html */
-
     /* Styles specific to index.html containers and forms */
     .container {
-        width: 90%; /* Responsive width */
-        max-width: 400px; /* Max width for the forms */
-        background-color: #ffcad4; /* Pale pink form */
-        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        background-color: #ffcad4; /* KEPT: Pale pink form */
+        border-radius: 15px; /* Consistent rounding */
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        padding: 30px 35px; /* More padding */
+        padding: 30px 35px;
         text-align: center;
-        /* margin-top: 20px; Remove this, main tag handles positioning */
+        /* Removed margin-top */
     }
     h2 {
         margin-top: 0;
         font-size: 24px;
         color: #333;
-        margin-bottom: 15px; /* Add space below heading */
+        margin-bottom: 15px;
     }
     p {
         font-size: 16px;
         color: #555;
-        margin-bottom: 25px; /* More space below paragraph */
+        margin-bottom: 25px;
     }
     input[type="text"],
     input[type="password"],
-    input[type="email"] { /* Assuming email might be used later */
+    input[type="email"] {
         width: 100%;
         padding: 12px;
         margin-top: 10px;
@@ -41,38 +38,29 @@
         border-radius: 8px;
         box-sizing: border-box;
         font-size: 14px;
+        /* Consider changing background to white for consistency? */
+        /* background-color: #fff8e7; */
     }
     input[type="password"]:focus {
         outline: none;
     }
-    button { /* Submit buttons */
-        width: 100%;
-        padding: 12px;
-        margin-top: 15px; /* Increased margin */
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-    button:hover {
-        background-color: #0056b3;
-        transform: scale(1.02);
-    }
-    button.secondary { /* Style for Go Back button */
-        background-color: #6c757d;
-        margin-top: 10px;
-    }
-    button.secondary:hover {
-        background-color: #5a6268;
-    }
-    button:disabled {
-        background-color: #ccc !important; /* Use !important to override hover */
-        cursor: not-allowed;
-        transform: none;
-    }
+
+    /* --- REMOVED Old Button Color Styles --- */
+    /* Removed rules for 'button', 'button:hover', 'button.secondary', etc. */
+    /* Using .btn, .btn-primary, .btn-secondary classes from _base.html */
+
+    /* Keep disabled style override */
+     button:disabled {
+         /* Style from _base.html will handle colors */
+         /* We just need the non-color overrides */
+         background-color: #ccc !important; /* Grey out background */
+         cursor: not-allowed;
+         transform: none;
+         /* Ensure text color is appropriate for disabled state if needed */
+         /* color: #888 !important; */
+     }
+
+
     .hidden {
         display: none;
     }
@@ -99,15 +87,15 @@
     }
     .requirements label {
         margin-left: 5px;
-        vertical-align: middle; /* Align label with checkbox */
+        vertical-align: middle;
     }
     .requirements input[type="checkbox"] {
         accent-color: green;
         margin-right: 5px;
         pointer-events: none;
-        vertical-align: middle; /* Align checkbox */
+        vertical-align: middle;
     }
-    .requirements div { /* Add spacing between requirements */
+    .requirements div {
         margin-bottom: 3px;
     }
     #password-strength {
@@ -115,7 +103,7 @@
         margin-top: 10px;
         font-size: 14px;
         display: none;
-        text-align: left; /* Align left */
+        text-align: left;
     }
     .error-message {
         color: red;
@@ -123,15 +111,25 @@
         margin-top: 5px;
         text-align: left;
         display: none;
-        min-height: 1em; /* Prevent layout shift when shown */
+        min-height: 1em;
     }
+    /* Adjust margins for buttons inside forms if needed */
+    #register-form .btn, #login-form .btn {
+        margin-top: 15px;
+    }
+     #register-form .btn-secondary, #login-form .btn-secondary {
+        margin-top: 10px; /* Less margin for secondary */
+    }
+
 </style>
 
 <div class="container" id="welcome-screen">
     <h2>Welcome to HabEx!</h2>
     <p>Manage your habits and expenses efficiently.</p>
-    <button onclick="showLogin()">Login</button>
-    <button onclick="showRegister()">Register Here</button>
+    {# ADDED classes btn btn-primary #}
+    <button class="btn btn-primary" onclick="showLogin()">Login</button>
+    {# ADDED classes btn btn-primary #}
+    <button class="btn btn-primary" onclick="showRegister()">Register Here</button>
 </div>
 
 <div class="container hidden" id="register-form">
@@ -155,9 +153,11 @@
             <div><input type="checkbox" id="req-special" disabled><label for="req-special">Contains a special symbol (!@#$..)</label></div>
         </div>
         <div id="password-strength"></div>
-        <button type="submit" id="register-button" disabled>Register</button>
+        {# ADDED classes btn btn-primary #}
+        <button type="submit" id="register-button" class="btn btn-primary" disabled>Register</button>
     </form>
-    <button class="secondary" onclick="goBack()">Go back</button>
+    {# CHANGED class to btn btn-secondary #}
+    <button class="btn btn-secondary" onclick="goBack()">Go back</button>
 </div>
 
 <div class="container hidden" id="login-form">
@@ -173,12 +173,15 @@
             <input type="checkbox" id="remember-me" name="remember-me" value="true" style="width: auto; margin-right: 5px; vertical-align: middle;">
             <label for="remember-me" style="margin: 0; font-weight: normal; vertical-align: middle;">Remember Me</label>
         </div>
-        <button type="submit">Login</button>
+         {# ADDED classes btn btn-primary #}
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
-    <button class="secondary" onclick="goBack()">Go back</button>
+     {# CHANGED class to btn btn-secondary #}
+    <button class="btn btn-secondary" onclick="goBack()">Go back</button>
 </div>
 
 <script>
+    // --- JavaScript functions remain the same (including console.log if you kept it) ---
     // --- Functions to Show/Hide Forms ---
     function showLogin() {
         document.getElementById('welcome-screen').classList.add('hidden');
@@ -250,7 +253,6 @@
         const registerButton = document.getElementById('register-button');
         const confirmPasswordInput = document.getElementById('reg-password2');
 
-        // Exit if elements aren't found (e.g., if called inappropriately)
         if (!passwordInput || !requirementsDiv || !strengthDiv || !registerButton || !confirmPasswordInput) {
              console.error("One or more registration form elements not found.");
              return;
@@ -261,7 +263,6 @@
         // --- Requirements Checks ---
         const isLongEnough = password.length >= 6;
         const hasNumber = /\d/.test(password);
-        // Stricter special char regex - adjust if needed
         const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
         document.getElementById('req-length').checked = isLongEnough;
@@ -292,19 +293,21 @@
         const confirmPassword = confirmPasswordInput.value;
         const passwordsMatch = (password === confirmPassword);
 
-        // --- ADD DEBUGGING LINES ---
+        // --- DEBUGGING LINES ---
         console.log("--- Button State Check ---");
-        console.log("Password Value:", `"${password}"`); // Show quotes to see spaces
-        console.log("Confirm Value:", `"${confirmPassword}"`); // Show quotes
+        console.log("Password Value:", `"${password}"`);
+        console.log("Confirm Value:", `"${confirmPassword}"`);
         console.log("Complexity OK?:", allValid);
         console.log("Passwords Match?:", passwordsMatch);
-        // Calculate final disabled state
         let shouldBeDisabled = !(allValid && passwordsMatch && password.length > 0);
         console.log("Setting registerButton.disabled to:", shouldBeDisabled);
         // --- END DEBUGGING LINES ---
 
         // --- Set Button State ---
-        registerButton.disabled = shouldBeDisabled;
+        // Ensure registerButton is only disabled/enabled if it exists
+        if(registerButton) {
+            registerButton.disabled = shouldBeDisabled;
+        }
     }
 
     function validateConfirmPassword() {
@@ -325,23 +328,13 @@
              confirmPasswordInput.style.borderColor = 'red';
          } else {
              errorMessage.style.display = "none";
-             // Set border green only if matching AND not empty
              confirmPasswordInput.style.borderColor = (passwordsMatch && confirmPassword.length > 0) ? 'green' : '#ccc';
          }
 
          // --- Re-evaluate Button State ---
-         // Call checkPasswordRequirements to update button based on latest match status AND complexity
          checkPasswordRequirements();
      }
 
-    // Add event listeners more safely if needed (optional)
-    // document.addEventListener('DOMContentLoaded', () => {
-    //    const regPassword = document.getElementById('reg-password');
-    //    const confirmPassword = document.getElementById('reg-password2');
-    //    if(regPassword) regPassword.addEventListener('keyup', checkPasswordRequirements);
-    //    if(confirmPassword) confirmPassword.addEventListener('keyup', validateConfirmPassword);
-    // });
-
 </script>
 
-{% endblock %} {# End of content block #}
+{% endblock %} {# End content block #}

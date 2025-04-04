@@ -4,40 +4,29 @@
 
 {% block content %} {# Start main content block #}
 <style>
-    /* Keep your existing styles here, or move them to a static CSS file */
-    body {
-        font-family: 'Arial', sans-serif;
-        /* background-color: #fff4b2; */ /* Base template likely handles background */
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: flex-start; /* Align top */
-        min-height: 90vh;
-    }
-
+    /* Styles specific to add_expenses.html */
     .container {
-        width: 90%; /* Wider */
-        max-width: 600px; /* Max width */
-        background-color: #ffcad4; /* Pale pink form */
-        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        background-color: #ffcad4; /* KEPT: Pale pink form */
+        border-radius: 15px; /* Consistent rounding */
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+        padding: 30px 35px; /* Adjust padding */
         text-align: center;
-        margin-top: 50px; /* Margin from nav */
-        /* Removed overflow-y: auto; let page scroll naturally */
+        /* Removed margin-top, handled by base main */
     }
 
     h2 {
         margin-top: 0;
         font-size: 24px;
         color: #333;
+        margin-bottom: 10px;
     }
 
     .note {
         font-size: 14px;
         color: #555;
-        margin-bottom: 25px; /* Increased margin */
+        margin-bottom: 25px;
         font-style: italic;
     }
 
@@ -47,12 +36,12 @@
     }
 
     label {
-        margin-top: 15px; /* Increased margin */
-        margin-bottom: 3px; /* Small gap before input */
+        margin-top: 15px;
+        margin-bottom: 3px;
         font-size: 14px;
         color: #333;
         text-align: left;
-        font-weight: bold; /* Make labels bold */
+        font-weight: bold;
     }
 
     input, select, textarea {
@@ -64,54 +53,35 @@
         border-radius: 8px;
         box-sizing: border-box;
         font-size: 14px;
-        background-color: #fff8e7; /* Light cream fields */
+        background-color: #fff8e7; /* Keeping light cream */
     }
 
     input[readonly] {
-        background-color: #f0f0f0; /* Slightly darker readonly */
-        color: #555;
+        background-color: #e9ecef; /* Consistent readonly grey */
+        color: #495057;
         cursor: not-allowed;
     }
 
-     
-         /* Specific styling for number input if needed */
-     
-
      textarea {
-        resize: vertical; /* Allow vertical resize */
-        min-height: 80px; /* Minimum height */
+        resize: vertical;
+        min-height: 80px;
      }
 
-    button, .btn-link-back { /* Style back link like a button */
+    /* --- REMOVED Old Button Color Styles --- */
+    /* Removed rules that set background-color for general 'button' */
+    /* Removed rules for '.btn-link-back' background-color and hover */
+    /* Base styles for button structure (.btn) and colors (.btn-primary, .btn-secondary) */
+    /* are now inherited from _base.html */
+
+     /* Keep general layout styles for buttons if they differ from base */
+     button, .btn { /* Ensure buttons and links with btn class have similar base layout */
         width: 100%;
-        padding: 12px;
-        margin-top: 15px; /* Spacing for buttons */
-        background-color: #007bff;
-        color: #fff !important;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        text-align: center;
-        text-decoration: none !important;
-        display: block; /* Make block for consistent spacing */
-        box-sizing: border-box;
-    }
+        padding: 12px; /* Keep padding consistent or use .btn class padding */
+        margin-top: 15px; /* Spacing between buttons */
+        border-radius: 8px; /* Keep rounding consistent or use .btn class */
+        /* Other non-color styles from old rule if needed */
+     }
 
-    button:hover, .btn-link-back:hover {
-        background-color: #0056b3;
-        transform: scale(1.02);
-        color: #fff !important;
-    }
-
-    .btn-link-back { /* Specific style for back button link */
-        background-color: #ff6f61;
-    }
-
-    .btn-link-back:hover {
-        background-color: #ff4f4f;
-    }
 
     @media (max-width: 768px) {
         .container {
@@ -128,13 +98,10 @@
     <h2>Log an Expense</h2>
     <p class="note">Fill in the details below to log a new expense.</p>
 
-    {# Form now POSTs directly to the Flask route #}
     <form id="expense-form" method="POST" action="{{ url_for('add_expense') }}">
 
-        {# Input fields with 'name' attributes matching Flask form keys #}
         <label for="current-date">Date</label>
         <input type="text" id="current-date" name="current-date" readonly>
-        {# Consider changing to type="date" if you want users to select date #}
         {# <input type="date" id="current-date" name="current-date"> #}
 
         <label for="expense-name">Expense Name</label>
@@ -155,56 +122,33 @@
         </select>
 
         <label for="amount">Amount (₹)</label>
-        {# Added step="any" to allow decimals. Use step="0.01" for exact cents #}
         <input type="number" id="amount" name="amount" min="0.01" step="any" placeholder="Enter amount (e.g., 150.50)" required>
 
         <label for="description">Description (Optional)</label>
         <textarea id="description" name="description" rows="3" placeholder="Any extra details?"></textarea>
 
-        {# Submit button now triggers form POST #}
-        <button type="submit">Log Expense</button>
+        {# ADDED classes btn btn-primary #}
+        <button type="submit" class="btn btn-primary">Log Expense</button>
 
     </form> {# End of form #}
 
-    {# Back button is now a styled link #}
-    <a href="{{ url_for('dashboard') }}" class="btn-link-back">Go Back to Dashboard</a>
+    {# CHANGED class to btn btn-secondary #}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Go Back to Dashboard</a>
 </div>
 
 <script>
-    // Automatically set today's date in the read-only field
+    // Script to set date (no changes needed here)
     document.addEventListener('DOMContentLoaded', () => {
-         const dateField = document.getElementById('current-date');
-         // Check if the field is text/readonly before setting value
-         if (dateField && dateField.type === 'text' && dateField.readOnly) {
+        const dateField = document.getElementById('current-date');
+        if (dateField && dateField.type === 'text' && dateField.readOnly) {
             const today = new Date();
-            // Format as YYYY-MM-DD
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             const todayDate = `${yyyy}-${mm}-${dd}`;
             dateField.value = todayDate;
         }
-         // If you change input to type="date", use this instead:
-         // const dateField = document.getElementById('current-date');
-         // if (dateField && dateField.type === 'date') {
-         //    if (!dateField.value) { // Only set if no value exists
-         //       dateField.valueAsDate = new Date();
-         //    }
-         // }
     });
-
-    // Remove the previous JavaScript submit listener
-    // const form = document.getElementById('expense-form');
-    // if (form) {
-    //    form.addEventListener('submit', (event) => {
-    //       event.preventDefault(); // DELETE or COMMENT OUT this part
-           // ... rest of old JS submit code ... DELETE or COMMENT OUT
-    //    });
-    // }
-
-
-    // Remove the old goBack() function - Use the <a> tag instead
-    // function goBack() { ... } // DELETE THIS
 </script>
 
 {% endblock %} {# End content block #}

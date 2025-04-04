@@ -4,37 +4,26 @@
 
 {% block content %} {# Start main content block #}
 <style>
-    /* Keep your existing styles here, or move them to a static CSS file */
-    body {
-        font-family: 'Arial', sans-serif;
-        /* background-color: #fff4b2; */ /* Base template likely handles background */
-        margin: 0;
-        padding: 20px; /* Add some padding */
-        display: flex; /* Keep flex for centering container */
-        justify-content: center;
-        align-items: flex-start; /* Align top */
-        min-height: 90vh;
-    }
-
+    /* Styles specific to analyze_habits.html */
     .container {
-        width: 90%; /* Wider for potentially more content */
-        max-width: 600px; /* Max width */
-        background-color: #ffcad4; /* Pale pink form */
-        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        background-color: #ffcad4; /* KEPT: Pale pink form */
+        border-radius: 15px; /* Consistent rounding */
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+        padding: 30px 35px; /* Adjust padding */
         text-align: center;
-        margin-top: 50px; /* Margin from nav */
+        /* Removed margin-top, handled by base main */
     }
 
     h2 {
         margin-top: 0;
-        margin-bottom: 15px; /* Added bottom margin */
+        margin-bottom: 15px;
         font-size: 24px;
         color: #333;
     }
 
-     p.description { /* Style for the description paragraph */
+     p.description {
         font-size: 16px;
         color: #555;
         margin-bottom: 25px;
@@ -49,86 +38,63 @@
         border-radius: 8px;
         box-sizing: border-box;
         font-size: 14px;
-        background-color: #fff8e7; /* Light cream dropdown */
+        background-color: #fff8e7; /* Keeping light cream */
         cursor: pointer;
     }
 
-    button, .btn-link-back { /* Style back link like a button */
-        width: 100%;
-        padding: 12px;
-        margin-top: 15px;
-        background-color: #007bff;
-        color: #fff !important;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        text-align: center;
-        text-decoration: none !important;
-        display: inline-block; /* For link styling */
-        box-sizing: border-box;
+    /* --- REMOVED Old Button Color Styles --- */
+    /* Removed rules setting background-color for 'button, .btn-link-back' */
+    /* Removed specific rules for '.btn-link-back' background-color and hover */
+
+    /* Use .btn styles from _base.html for layout */
+    /* Example override if needed: */
+    .btn {
+        margin-top: 20px; /* Adjust top margin for buttons on this page */
     }
 
-    button:hover, .btn-link-back:hover {
-        background-color: #0056b3;
-        transform: scale(1.02);
-        color: #fff !important;
-    }
-
-    .result-container { /* Renamed for clarity */
+    .result-container {
         margin-top: 25px;
         padding: 20px;
-        background-color: #fff8e7;
+        background-color: #fff8e7; /* Keeping light cream */
         border-radius: 12px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: left; /* Align text left */
-        min-height: 50px; /* Minimum height */
-        font-size: 15px; /* Slightly smaller font */
+        text-align: left;
+        min-height: 50px;
+        font-size: 15px;
     }
      .result-container h4 {
-         margin-top: 0;
-         color: #333;
-         border-bottom: 1px solid #eee;
-         padding-bottom: 8px;
-         margin-bottom: 12px;
+        margin-top: 0;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
      }
      .result-container p {
-         margin-bottom: 8px;
-         line-height: 1.5;
+        margin-bottom: 8px;
+        line-height: 1.5;
      }
-     .result-container em { /* Style placeholder text */
-         color: #888;
+     .result-container em {
+        color: #888;
      }
-
 
     .motivational-message {
         margin-top: 20px;
         font-size: 16px;
         color: #333;
-        background-color: #d4edda; /* Light green for positivity */
-        padding: 15px; /* Increased padding */
+        background-color: #d4edda; /* Keeping light green */
+        padding: 15px;
         border-radius: 8px;
-        text-align: left; /* Align text left */
-        min-height: 40px; /* Minimum height */
+        text-align: left;
+        min-height: 40px;
     }
-    .motivational-message em { /* Style placeholder text */
+    .motivational-message em {
         color: #555;
     }
 
 
-    .btn-link-back { /* Style for back button link */
-        background-color: #ff6f61;
-        margin-top: 25px; /* More space before back button */
-    }
-
-    .btn-link-back:hover {
-        background-color: #ff4f4f;
-    }
-
     @media (max-width: 768px) {
         .container {
-            width: 95%; /* Adjust width */
+            width: 95%;
             padding: 20px;
         }
     }
@@ -138,7 +104,6 @@
     <h2>Analyze Your Habits</h2>
     <p class="description">Select a habit below to analyze your consistency and streaks!</p>
 
-    {# Dropdown populated dynamically from Flask #}
     <select id="habit-dropdown" name="habit_name">
         <option value="" disabled selected>-- Select a habit --</option>
         {% if habit_names %}
@@ -150,8 +115,8 @@
         {% endif %}
     </select>
 
-    {# Button to trigger JavaScript analysis #}
-    <button onclick="analyzeHabit()">Analyze Habit</button>
+    {# ADDED classes btn btn-primary #}
+    <button class="btn btn-primary" onclick="analyzeHabit()">Analyze Habit</button>
 
     {# Div to display analysis results #}
     <div class="result-container" id="streak-chart">
@@ -163,63 +128,47 @@
         🌟 <em>Keep building those habits!</em>
     </div>
 
-    {# Back button as a styled link using url_for #}
-    <a href="{{ url_for('dashboard') }}" class="btn-link-back">Go Back to Dashboard</a>
+    {# CHANGED class to btn btn-secondary #}
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Go Back to Dashboard</a>
 </div>
 
 <script>
-    // No longer need DOMContentLoaded to populate dropdown - Jinja handles it.
-
-    async function analyzeHabit() { // Use async/await for cleaner fetch
+    // Script to fetch analysis (no changes needed here from before)
+    async function analyzeHabit() {
         const habitDropdown = document.getElementById('habit-dropdown');
         const habitName = habitDropdown.value;
         const resultsDiv = document.getElementById('streak-chart');
         const messageBox = document.getElementById('message-box');
-
-        // Clear previous results
         resultsDiv.innerHTML = '<em>Loading analysis...</em>';
         messageBox.innerHTML = '<em>Checking your progress...</em>';
 
         if (!habitName) {
             resultsDiv.innerHTML = '<em>Please select a habit first!</em>';
-            messageBox.innerHTML = ''; // Clear message box
+            messageBox.innerHTML = '';
             return;
         }
-
         try {
-            // Fetch analysis data from the Flask endpoint
             const response = await fetch(`/get_habit_analysis/${encodeURIComponent(habitName)}`);
-
             if (!response.ok) {
-                 // Handle non-JSON errors from server (like 404, 500)
-                const errorText = await response.text(); // Try get text feedback
-                throw new Error(`Network response error: ${response.status} ${response.statusText}. ${errorText}`);
+               const errorText = await response.text();
+               throw new Error(`Network response error: ${response.status} ${response.statusText}. ${errorText}`);
             }
-
             const data = await response.json();
-
             if (data.error) {
-                // Handle errors returned in JSON from Flask
                 resultsDiv.innerHTML = `<em>Error: ${data.error}</em>`;
                 messageBox.innerHTML = '🤔 <em>Try logging this habit first.</em>';
             } else {
-                // Update the HTML with fetched data
                 resultsDiv.innerHTML = `
                     <h4>Analysis for: ${data.habit_name}</h4>
                     <p><strong>Total Logs Found:</strong> ${data.total_logs}</p>
                     <p><strong>Completed Logs:</strong> ${data.completed_logs}</p>
                     <p><strong>Overall Consistency:</strong> ${data.consistency_percent}%</p>
                 `;
-                // Update motivational message based on streaks
                 let message = `Current Streak: ${data.current_streak} days | Longest Streak: ${data.max_streak} days. `;
-                if (data.current_streak > 3) {
-                    message += "🔥 Keep the fire burning!";
-                } else if (data.max_streak > 0) {
-                    message += "👍 You've done it before, you can do it again!";
-                } else {
-                    message += "🌱 Every journey starts with a single step.";
-                }
-                 messageBox.innerHTML = `🌟 ${message}`;
+                if (data.current_streak > 3) { message += "🔥 Keep the fire burning!"; }
+                else if (data.max_streak > 0) { message += "👍 You've done it before!"; }
+                else { message += "🌱 Every step counts!"; }
+                messageBox.innerHTML = `🌟 ${message}`;
             }
         } catch (error) {
             console.error('Fetch error:', error);
@@ -227,10 +176,6 @@
             messageBox.innerHTML = '😞 <em>Something went wrong. Please try again later.</em>';
         }
     }
-
-    // Remove the old goBack() function if it exists, use the <a> tag instead
-    // function goBack() { ... } // DELETE THIS
-
 </script>
 
 {% endblock %} {# End content block #}
