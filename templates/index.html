@@ -1,0 +1,347 @@
+{% extends '_base.html' %} {# Inherit structure from base template #}
+
+{% block title %}Login or Register - HabEx{% endblock %} {# Set page title #}
+
+{% block content %} {# Define the main content block #}
+
+<style>
+    /* --- REMOVED CENTERING STYLES FOR BODY --- */
+    /* Centering is now handled by <main> in _base.html */
+
+    /* Styles specific to index.html containers and forms */
+    .container {
+        width: 90%; /* Responsive width */
+        max-width: 400px; /* Max width for the forms */
+        background-color: #ffcad4; /* Pale pink form */
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        padding: 30px 35px; /* More padding */
+        text-align: center;
+        /* margin-top: 20px; Remove this, main tag handles positioning */
+    }
+    h2 {
+        margin-top: 0;
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 15px; /* Add space below heading */
+    }
+    p {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 25px; /* More space below paragraph */
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] { /* Assuming email might be used later */
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    input[type="password"]:focus {
+        outline: none;
+    }
+    button { /* Submit buttons */
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px; /* Increased margin */
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+        background-color: #0056b3;
+        transform: scale(1.02);
+    }
+    button.secondary { /* Style for Go Back button */
+        background-color: #6c757d;
+        margin-top: 10px;
+    }
+    button.secondary:hover {
+        background-color: #5a6268;
+    }
+    button:disabled {
+        background-color: #ccc !important; /* Use !important to override hover */
+        cursor: not-allowed;
+        transform: none;
+    }
+    .hidden {
+        display: none;
+    }
+    .password-container {
+        position: relative;
+        width: 100%;
+        margin: 10px 0;
+    }
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        user-select: none;
+        font-size: 16px;
+        color: #555;
+    }
+    .requirements {
+        text-align: left;
+        margin-top: 15px;
+        font-size: 13px;
+        color: #333;
+    }
+    .requirements label {
+        margin-left: 5px;
+        vertical-align: middle; /* Align label with checkbox */
+    }
+    .requirements input[type="checkbox"] {
+        accent-color: green;
+        margin-right: 5px;
+        pointer-events: none;
+        vertical-align: middle; /* Align checkbox */
+    }
+    .requirements div { /* Add spacing between requirements */
+        margin-bottom: 3px;
+    }
+    #password-strength {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 14px;
+        display: none;
+        text-align: left; /* Align left */
+    }
+    .error-message {
+        color: red;
+        font-size: 13px;
+        margin-top: 5px;
+        text-align: left;
+        display: none;
+        min-height: 1em; /* Prevent layout shift when shown */
+    }
+</style>
+
+<div class="container" id="welcome-screen">
+    <h2>Welcome to HabEx!</h2>
+    <p>Manage your habits and expenses efficiently.</p>
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showRegister()">Register Here</button>
+</div>
+
+<div class="container hidden" id="register-form">
+    <h2>Register</h2>
+    <form method="POST" action="{{ url_for('index') }}" id="registrationForm">
+        <input type="hidden" name="action" value="register">
+        <input type="text" id="reg-username" name="reg-username" placeholder="Username" required autocomplete="username">
+        <div class="password-container">
+            <input type="password" id="reg-password" name="reg-password" placeholder="Choose a strong password" required onfocus="showRequirements()" onkeyup="checkPasswordRequirements()" autocomplete="new-password">
+            <span class="toggle-password" onclick="togglePassword('reg-password')">👁️</span>
+        </div>
+        <div class="password-container">
+            <input type="password" id="reg-password2" name="reg-password2" placeholder="Confirm Password" required onkeyup="validateConfirmPassword()" autocomplete="new-password">
+            <span class="toggle-password" onclick="togglePassword('reg-password2')">👁️</span>
+        </div>
+        <div class="error-message" id="confirm-password-error">Passwords do not match!</div>
+        <div class="requirements hidden" id="password-requirements">
+            <p style="margin-bottom: 5px; font-weight:bold;">Password must contain:</p>
+            <div><input type="checkbox" id="req-length" disabled><label for="req-length">At least 6 characters</label></div>
+            <div><input type="checkbox" id="req-number" disabled><label for="req-number">Contains a number</label></div>
+            <div><input type="checkbox" id="req-special" disabled><label for="req-special">Contains a special symbol (!@#$..)</label></div>
+        </div>
+        <div id="password-strength"></div>
+        <button type="submit" id="register-button" disabled>Register</button>
+    </form>
+    <button class="secondary" onclick="goBack()">Go back</button>
+</div>
+
+<div class="container hidden" id="login-form">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('index') }}">
+        <input type="hidden" name="action" value="login">
+        <input type="text" id="login-username" name="login-username" placeholder="Username" required autocomplete="username">
+        <div class="password-container">
+            <input type="password" id="login-password" name="login-password" placeholder="Password" required autocomplete="current-password">
+            <span class="toggle-password" onclick="togglePassword('login-password')">👁️</span>
+        </div>
+        <div style="text-align: left; margin: 10px 0; font-size: 14px;">
+            <input type="checkbox" id="remember-me" name="remember-me" value="true" style="width: auto; margin-right: 5px; vertical-align: middle;">
+            <label for="remember-me" style="margin: 0; font-weight: normal; vertical-align: middle;">Remember Me</label>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <button class="secondary" onclick="goBack()">Go back</button>
+</div>
+
+<script>
+    // --- Functions to Show/Hide Forms ---
+    function showLogin() {
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('register-form').classList.add('hidden');
+        document.getElementById('login-form').classList.remove('hidden');
+        clearForm('login');
+    }
+    function showRegister() {
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('register-form').classList.remove('hidden');
+        clearForm('register');
+    }
+    function goBack() {
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('register-form').classList.add('hidden');
+        document.getElementById('welcome-screen').classList.remove('hidden');
+        clearForm('all'); // Clear all forms when going back to welcome
+    }
+    function clearForm(formType) {
+        // Clear fields based on which form is being shown/hidden
+        if (formType === 'register' || formType === 'all') {
+            document.querySelectorAll('#register-form input[type="text"], #register-form input[type="password"]').forEach(input => input.value = '');
+            if(document.getElementById('password-requirements')){
+                document.getElementById('password-requirements').classList.add('hidden');
+                document.querySelectorAll('#password-requirements input[type="checkbox"]').forEach(cb => cb.checked = false);
+            }
+            if(document.getElementById('password-strength')){
+                document.getElementById('password-strength').style.display = 'none';
+                document.getElementById('password-strength').textContent = '';
+            }
+             if (document.getElementById('reg-password')) { document.getElementById('reg-password').style.borderColor = '#ccc'; }
+             if (document.getElementById('reg-password2')) { document.getElementById('reg-password2').style.borderColor = '#ccc'; }
+            if(document.getElementById('confirm-password-error')){ document.getElementById('confirm-password-error').style.display = 'none'; }
+            if(document.getElementById('register-button')){ document.getElementById('register-button').disabled = true; }
+        }
+        if (formType === 'login' || formType === 'all') {
+             document.querySelectorAll('#login-form input[type="text"], #login-form input[type="password"]').forEach(input => input.value = '');
+             if (document.getElementById('remember-me')) { document.getElementById('remember-me').checked = false; }
+        }
+    }
+
+    // --- Password Visibility Toggle ---
+    function togglePassword(id) {
+        const inputField = document.getElementById(id);
+        if (!inputField) return; // Exit if element not found
+        const toggleIcon = inputField.nextElementSibling;
+        if (inputField.type === "password") {
+            inputField.type = "text";
+            if(toggleIcon) toggleIcon.textContent = "🙈";
+        } else {
+            inputField.type = "password";
+            if(toggleIcon) toggleIcon.textContent = "👁️";
+        }
+    }
+
+    // --- Registration Password Validation (Client-side) ---
+    function showRequirements() {
+        if(document.getElementById('password-requirements')){
+           document.getElementById('password-requirements').classList.remove('hidden');
+        }
+    }
+
+    function checkPasswordRequirements() {
+        // --- Get Elements (ensure they exist) ---
+        const passwordInput = document.getElementById('reg-password');
+        const requirementsDiv = document.getElementById('password-requirements');
+        const strengthDiv = document.getElementById('password-strength');
+        const registerButton = document.getElementById('register-button');
+        const confirmPasswordInput = document.getElementById('reg-password2');
+
+        // Exit if elements aren't found (e.g., if called inappropriately)
+        if (!passwordInput || !requirementsDiv || !strengthDiv || !registerButton || !confirmPasswordInput) {
+             console.error("One or more registration form elements not found.");
+             return;
+        }
+
+        const password = passwordInput.value;
+
+        // --- Requirements Checks ---
+        const isLongEnough = password.length >= 6;
+        const hasNumber = /\d/.test(password);
+        // Stricter special char regex - adjust if needed
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        document.getElementById('req-length').checked = isLongEnough;
+        document.getElementById('req-number').checked = hasNumber;
+        document.getElementById('req-special').checked = hasSpecial;
+
+        // --- Determine Strength & Styles ---
+        const allValid = isLongEnough && hasNumber && hasSpecial;
+        let strengthText = "";
+        let strengthColor = "";
+        let borderColor = "#ccc";
+
+        if (allValid) {
+            strengthText = "Strong"; strengthColor = "green"; borderColor = "green";
+        } else if (password.length > 0 && isLongEnough && (hasNumber || hasSpecial)) {
+            strengthText = "Medium"; strengthColor = "#e6b800"; borderColor = "#e6b800";
+        } else if (password.length > 0) {
+            strengthText = "Weak"; strengthColor = "red"; borderColor = "red";
+        }
+
+        // --- Update UI Elements ---
+        strengthDiv.textContent = password.length > 0 ? `Password Strength: ${strengthText}` : '';
+        strengthDiv.style.color = strengthColor;
+        strengthDiv.style.display = password.length > 0 ? "block" : "none";
+        passwordInput.style.borderColor = borderColor;
+
+        // --- Check Password Match ---
+        const confirmPassword = confirmPasswordInput.value;
+        const passwordsMatch = (password === confirmPassword);
+
+        // --- ADD DEBUGGING LINES ---
+        console.log("--- Button State Check ---");
+        console.log("Password Value:", `"${password}"`); // Show quotes to see spaces
+        console.log("Confirm Value:", `"${confirmPassword}"`); // Show quotes
+        console.log("Complexity OK?:", allValid);
+        console.log("Passwords Match?:", passwordsMatch);
+        // Calculate final disabled state
+        let shouldBeDisabled = !(allValid && passwordsMatch && password.length > 0);
+        console.log("Setting registerButton.disabled to:", shouldBeDisabled);
+        // --- END DEBUGGING LINES ---
+
+        // --- Set Button State ---
+        registerButton.disabled = shouldBeDisabled;
+    }
+
+    function validateConfirmPassword() {
+         // --- Get Elements ---
+         const passwordInput = document.getElementById('reg-password');
+         const confirmPasswordInput = document.getElementById('reg-password2');
+         const errorMessage = document.getElementById('confirm-password-error');
+
+         if (!passwordInput || !confirmPasswordInput || !errorMessage ) { return; } // Exit if elements missing
+
+         const password = passwordInput.value;
+         const confirmPassword = confirmPasswordInput.value;
+         const passwordsMatch = (password === confirmPassword);
+
+         // --- Update Confirm Field UI ---
+         if (confirmPassword.length > 0 && !passwordsMatch) {
+             errorMessage.style.display = "block";
+             confirmPasswordInput.style.borderColor = 'red';
+         } else {
+             errorMessage.style.display = "none";
+             // Set border green only if matching AND not empty
+             confirmPasswordInput.style.borderColor = (passwordsMatch && confirmPassword.length > 0) ? 'green' : '#ccc';
+         }
+
+         // --- Re-evaluate Button State ---
+         // Call checkPasswordRequirements to update button based on latest match status AND complexity
+         checkPasswordRequirements();
+     }
+
+    // Add event listeners more safely if needed (optional)
+    // document.addEventListener('DOMContentLoaded', () => {
+    //    const regPassword = document.getElementById('reg-password');
+    //    const confirmPassword = document.getElementById('reg-password2');
+    //    if(regPassword) regPassword.addEventListener('keyup', checkPasswordRequirements);
+    //    if(confirmPassword) confirmPassword.addEventListener('keyup', validateConfirmPassword);
+    // });
+
+</script>
+
+{% endblock %} {# End of content block #}

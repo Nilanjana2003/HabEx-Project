@@ -1,0 +1,180 @@
+{% extends '_base.html' %} {# Inherit from base template #}
+
+{% block title %}Add New Habit - HabEx{% endblock %} {# Set page title #}
+
+{% block content %} {# Start main content block #}
+<style>
+    /* Keep your existing styles here, or move them to a static CSS file */
+    body {
+        font-family: 'Arial', sans-serif;
+        /* background-color: #fff4b2; */ /* Base template likely handles background */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Align top */
+        min-height: 90vh;
+    }
+
+    .container {
+        width: 90%; /* Wider */
+        max-width: 500px; /* Max width */
+        background-color: #ffcad4; /* Pale pink form */
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        text-align: center;
+        margin-top: 50px; /* Margin from nav */
+    }
+
+    h2 {
+        margin-top: 0;
+        font-size: 24px;
+        color: #333;
+    }
+
+    p.description { /* Style for description */
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 25px;
+    }
+
+    label { /* Add some basic label styling */
+         display: block;
+         text-align: left;
+         margin-top: 15px;
+         margin-bottom: 3px;
+         font-weight: bold;
+         font-size: 14px;
+         color: #333;
+     }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px; /* Adjust margin */
+        margin-bottom: 15px; /* Increase bottom margin */
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 14px;
+        background-color: #fff8e7; /* Light cream fields */
+    }
+
+    input[readonly] {
+        background-color: #f0f0f0; /* Slightly darker readonly */
+        color: #555;
+        cursor: not-allowed;
+    }
+
+    textarea {
+        resize: vertical; /* Allow vertical resize */
+        min-height: 80px; /* Minimum height */
+        height: 100px;
+    }
+
+    button, .btn-link-back { /* Style back link like a button */
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px; /* Spacing between buttons */
+        background-color: #007bff;
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-align: center;
+        text-decoration: none !important;
+        display: block; /* Make block for consistent spacing */
+        box-sizing: border-box;
+    }
+
+    button:hover, .btn-link-back:hover {
+        background-color: #0056b3;
+        transform: scale(1.02);
+        color: #fff !important;
+    }
+
+    .btn-link-back { /* Specific style for back button link */
+        background-color: #ff6f61;
+    }
+
+    .btn-link-back:hover {
+        background-color: #ff4f4f;
+    }
+
+    /* Remove disabled button styles if not needed */
+    /* button:disabled { ... } */
+
+    @media (max-width: 768px) {
+        .container {
+            width: 95%;
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="container">
+    <h2>Add a New Habit</h2>
+    <p class="description">Log a habit you want to track for today.</p>
+
+    {# Form now POSTs directly to the Flask route #}
+    <form id="habit-form" method="POST" action="{{ url_for('add_habit') }}">
+
+        {# Input fields with 'name' attributes matching Flask form keys #}
+        <label for="habit-name">Habit Name</label>
+        <input type="text" id="habit-name" name="habit-name" placeholder="e.g., Drink Water, Exercise" required>
+
+        <label for="habit-description">Description (Optional)</label>
+        <textarea id="habit-description" name="habit-description" placeholder="Any specific details? (e.g., 30 minutes run)"></textarea>
+
+        <label for="current-date">Date</label>
+        <input type="text" id="current-date" name="current-date" readonly>
+        {# Consider changing to type="date" if you want users to select date #}
+        {# <input type="date" id="current-date" name="current-date"> #}
+
+
+        {# Submit button now triggers form POST #}
+        <button type="submit">Save Habit for Today</button>
+
+    </form> {# End of form #}
+
+    {# Back button is now a styled link #}
+    <a href="{{ url_for('dashboard') }}" class="btn-link-back">Go Back to Dashboard</a>
+
+</div>
+
+<script>
+    // Automatically set today's date in the read-only field
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateField = document.getElementById('current-date');
+        // Check if the field is text/readonly before setting value
+        if (dateField && dateField.type === 'text' && dateField.readOnly) {
+            const today = new Date();
+            // Format as YYYY-MM-DD
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayDate = `${yyyy}-${mm}-${dd}`;
+            dateField.value = todayDate;
+        }
+         // If you change input to type="date", use this instead:
+         // const dateField = document.getElementById('current-date');
+         // if (dateField && dateField.type === 'date') {
+         //    if (!dateField.value) { // Only set if no value exists
+         //       dateField.valueAsDate = new Date();
+         //    }
+         // }
+    });
+
+    // Remove the old saveHabit() function - Flask handles submission
+    // function saveHabit() { ... } // DELETE THIS
+
+    // Remove the old goBack() function - Use the <a> tag instead
+    // function goBack() { ... } // DELETE THIS
+</script>
+
+{% endblock %} {# End content block #}

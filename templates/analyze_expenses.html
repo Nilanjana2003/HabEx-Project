@@ -1,0 +1,150 @@
+{% extends '_base.html' %} {# Inherit from base template #}
+
+{% block title %}Analyze Expenses - HabEx{% endblock %} {# Set page title #}
+
+{% block content %} {# Start main content block #}
+<style>
+    /* Keep your existing styles here, or move them to a static CSS file */
+    body {
+        font-family: Arial, sans-serif;
+        /* background-color: #fff4b2; */ /* Base handles background */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 90vh;
+    }
+
+    .container {
+        width: 90%; /* Wider */
+        max-width: 900px; /* Max width */
+        background: #ffcad4;
+        border-radius: 12px;
+        padding: 30px;
+        margin-top: 50px; /* Margin from nav */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 25px;
+    }
+
+    /* Remove budget display styles if section is removed */
+    /* .budget-display { ... } */
+
+    .chart-container {
+        margin-top: 30px; /* Increased margin */
+        padding: 15px;
+        background-color: #fff8e7;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Center the image/text */
+    }
+     .chart-container h3 {
+         margin-top: 0;
+         margin-bottom: 15px;
+         color: #555;
+     }
+     .chart-container img {
+         max-width: 100%; /* Ensure images are responsive */
+         height: auto;
+         border-radius: 8px; /* Optional: round corners of image */
+     }
+     .chart-container p { /* Style for placeholder text */
+        color: #888;
+        padding: 20px;
+     }
+
+
+    .btn-link-back { /* Style back link like a button */
+        width: 100%;
+        max-width: 300px; /* Limit width */
+        padding: 12px;
+        margin: 30px auto 0; /* Center button with auto margins */
+        background-color: #ff6f61;
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-align: center;
+        text-decoration: none !important;
+        display: block; /* Make it block for margin auto */
+        box-sizing: border-box;
+    }
+
+    .btn-link-back:hover {
+        background-color: #ff4f4f;
+        transform: scale(1.02);
+        color: #fff !important;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            width: 95%;
+            padding: 20px;
+        }
+         .chart-container {
+             padding: 10px;
+         }
+    }
+</style>
+
+<div class="container">
+    <h2>Analyze Your Expenses</h2>
+
+    {# --- Removed Budget Display Section --- #}
+    {# You can add this back if you implement budget features later #}
+    {# <div class="budget-display"> ... </div> #}
+
+    {# Display Category Breakdown Plot (Pie Chart) #}
+    <div class="chart-container">
+        <h3>Expense Breakdown by Category</h3>
+        {% if plot_cat %}
+            {# Display the base64 encoded image passed from Flask #}
+            <img src="data:image/png;base64,{{ plot_cat }}" alt="Expense Category Breakdown">
+        {% else %}
+            <p><em>No expense data available to generate category breakdown.</em></p>
+        {% endif %}
+    </div>
+
+    {# Display Monthly Trend Plot (Bar Chart) #}
+    <div class="chart-container">
+        <h3>Monthly Spending Trend</h3>
+        {% if plot_trend %}
+             {# Display the base64 encoded image passed from Flask #}
+            <img src="data:image/png;base64,{{ plot_trend }}" alt="Monthly Spending Trend">
+        {% else %}
+             <p><em>No expense data available to generate monthly trend.</em></p>
+        {% endif %}
+    </div>
+
+    {# --- Removed Daily/Weekly Canvas/Charts --- #}
+    {# <div class="chart-container"> ... <canvas id="dailyChart"></canvas> ... </div> #}
+    {# <div class="chart-container"> ... <canvas id="weeklyChart"></canvas> ... </div> #}
+
+
+    {# Back button as a styled link using url_for #}
+    <a href="{{ url_for('dashboard') }}" class="btn-link-back">Go Back to Dashboard</a>
+</div>
+
+{# Remove the Chart.js script and related JS functions #}
+{# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
+<script>
+    // Remove all previous JavaScript functions:
+    // - loadBudgets()
+    // - renderDailyChart()
+    // - renderWeeklyChart()
+    // - renderCategoryChart()
+    // - goBack()
+
+    // No client-side chart rendering needed now.
+    // Flask provides the images directly.
+</script>
+
+{% endblock %} {# End content block #}
